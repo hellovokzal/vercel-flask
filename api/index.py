@@ -1,18 +1,35 @@
-from flask import Flask, render_template
+from os import *
+
+system("pip install requests ; pip install time")
+
+from flask import Flask, Response
+from requests import get
+from time import *
+
+num = 0
+text = ""
 
 app = Flask(__name__)
 
+@app.route("/<path:message>")
+def echo(message):
+    global num
+    global text
+    text = message + "\n"
+    num = 1
+    return "OK"
 
-@app.route('/')
-def hello():
-    return 'Hello, world'
+@app.route("/stream")
+def stream():
+    def chat():
+        global num
+        global text
+        while True:
+            sleep(1)
+            if num == 1:
+                num = 0
+                yield text
+    return Response(chat(), mimetype="text/event-stream")
 
-
-@app.route('/test')
-def test():
-    return 'Test'
-
-@app.route('/result')
-def result():
-   dict = {'phy':50,'che':60,'maths':70}
-   return render_template('result.html', result = dict)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0")
