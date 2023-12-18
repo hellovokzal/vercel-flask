@@ -1,9 +1,8 @@
 from os import *
 
-system("pip install requests ; pip install time")
+system("pip install time")
 
 from flask import Flask, Response
-from requests import get
 from time import *
 
 num = 0
